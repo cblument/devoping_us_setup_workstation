@@ -1,0 +1,23 @@
+---
+- name: Install starship via official install script
+  ansible.builtin.shell:
+    cmd: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  args:
+    creates: /usr/local/bin/starship
+  when: starship_install_method == 'script'
+
+- name: Install cargo (required for cargo install method)
+  ansible.builtin.apt:
+    name:
+      - cargo
+      - build-essential
+    state: present
+    update_cache: true
+  become: true
+  when: starship_install_method == 'package'
+
+- name: Install starship via cargo
+  ansible.builtin.command:
+    cmd: cargo install starship --locked
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/starship"
+  when: starship_install_method == 'package'

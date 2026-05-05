@@ -1,0 +1,18 @@
+---
+- name: Get fish executable path
+  ansible.builtin.command: which fish
+  register: fish_path
+  changed_when: false
+
+- name: Ensure fish is listed in /etc/shells
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ fish_path.stdout }}"
+    state: present
+  become: true
+
+- name: Set fish as default shell for current user
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ fish_path.stdout }}"
+  become: true

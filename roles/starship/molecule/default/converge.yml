@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: starship
+      vars:
+        starship_install_method: script
+        starship_configure_shells:
+          - bash
+          - fish

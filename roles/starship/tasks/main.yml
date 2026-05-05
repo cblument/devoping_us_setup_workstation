@@ -1,0 +1,16 @@
+---
+- name: Fail on unsupported OS family
+  ansible.builtin.fail:
+    msg: "Unsupported OS family: {{ ansible_os_family }}. This role supports Debian and Darwin only."
+  when: ansible_os_family not in ['Debian', 'Darwin']
+
+- name: Include OS-family-specific tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: Configure shell integrations
+  ansible.builtin.include_tasks: shell_init.yml
+  when: starship_configure_shells | length > 0
+
+- name: Deploy starship.toml
+  ansible.builtin.include_tasks: config.yml
+  when: starship_config_src | length > 0

@@ -1,0 +1,15 @@
+---
+- name: Include OS-family-specific tasks
+  ansible.builtin.include_tasks: "{{ tasks_file }}"
+  vars:
+    tasks_file: "{{ ansible_os_family | lower }}.yml"
+  when: ansible_os_family in ['Debian', 'Darwin']
+
+- name: Fail on unsupported OS family
+  ansible.builtin.fail:
+    msg: "Unsupported OS family: {{ ansible_os_family }}. This role supports Debian and Darwin only."
+  when: ansible_os_family not in ['Debian', 'Darwin']
+
+- name: Set fish as default shell
+  ansible.builtin.include_tasks: set_default_shell.yml
+  when: fish_set_as_default_shell | bool

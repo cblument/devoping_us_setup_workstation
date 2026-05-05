@@ -1,0 +1,4 @@
+---
+fish_install_from_ppa: true           # Ubuntu only: add fish PPA before installing
+fish_ppa: "ppa:fish-shell/release-4"  # Fish 4.x PPA; change to release-3 for Fish 3.x
+fish_set_as_default_shell: false       # Set fish as the login shell for ansible_user_id

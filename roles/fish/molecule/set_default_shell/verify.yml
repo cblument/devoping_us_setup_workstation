@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Get fish executable path
+      ansible.builtin.command: which fish
+      register: fish_path
+      changed_when: false
+
+    - name: Read /etc/shells
+      ansible.builtin.command: cat /etc/shells
+      register: etc_shells
+      changed_when: false
+
+    - name: Assert fish is listed in /etc/shells
+      ansible.builtin.assert:
+        that:
+          - fish_path.stdout in etc_shells.stdout
+        fail_msg: "{{ fish_path.stdout }} not found in /etc/shells"
+
+    - name: Get current user's shell from passwd database
+      ansible.builtin.command: "getent passwd {{ ansible_user_id }}"
+      register: passwd_entry
+      changed_when: false
+
+    - name: Assert user's default shell is fish
+      ansible.builtin.assert:
+        that:
+          - passwd_entry.stdout.split(':')[6] == fish_path.stdout
+        fail_msg: >
+          Expected default shell {{ fish_path.stdout }},
+          got {{ passwd_entry.stdout.split(':')[6] }}

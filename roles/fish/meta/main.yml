@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  role_name: fish
+  author: devoping_us
+  description: Install the fish shell on Ubuntu/Debian and macOS
+  license: BSD-3-Clause
+  min_ansible_version: "2.12"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+        - plucky
+    - name: MacOSX
+      versions:
+        - any
+
+dependencies: []

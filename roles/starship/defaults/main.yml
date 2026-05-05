@@ -1,0 +1,12 @@
+---
+# Installation method: "script" (official install.sh) or "package" (Homebrew on macOS, cargo on Debian)
+starship_install_method: script
+
+# Shell(s) to configure starship init in. List any of: fish, bash, zsh
+starship_configure_shells: []
+
+# Optional: path to a starship.toml to deploy; leave empty to skip
+starship_config_src: ""
+
+# Directory where starship.toml is placed (XDG default)
+starship_config_dir: "{{ ansible_env.HOME }}/.config"

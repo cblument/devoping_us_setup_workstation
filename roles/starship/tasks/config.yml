@@ -1,0 +1,12 @@
+---
+- name: Ensure starship config directory exists
+  ansible.builtin.file:
+    path: "{{ starship_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy starship.toml
+  ansible.builtin.copy:
+    src: "{{ starship_config_src }}"
+    dest: "{{ starship_config_dir }}/starship.toml"
+    mode: "0644"

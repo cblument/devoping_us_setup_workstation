@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Stat fish binary
+      ansible.builtin.stat:
+        path: /usr/bin/fish
+      register: fish_bin
+
+    - name: Assert fish binary exists and is executable
+      ansible.builtin.assert:
+        that:
+          - fish_bin.stat.exists
+          - fish_bin.stat.executable
+        fail_msg: "fish binary not found or not executable at /usr/bin/fish"
+
+    - name: Run fish --version
+      ansible.builtin.command: fish --version
+      register: fish_version
+      changed_when: false
+
+    - name: Assert fish --version output contains 'fish'
+      ansible.builtin.assert:
+        that:
+          - "'fish' in fish_version.stderr or 'fish' in fish_version.stdout"
+        fail_msg: "Unexpected fish --version output: {{ fish_version.stdout }} {{ fish_version.stderr }}"
+
+    - name: Find fish-shell PPA source file
+      ansible.builtin.find:
+        paths: /etc/apt/sources.list.d
+        patterns: "*fish*"
+      register: fish_ppa_files
+
+    - name: Assert fish PPA source file is present
+      ansible.builtin.assert:
+        that:
+          - fish_ppa_files.matched > 0
+        fail_msg: "No fish-shell PPA source file found in /etc/apt/sources.list.d/"

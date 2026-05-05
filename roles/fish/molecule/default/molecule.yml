@@ -1,0 +1,23 @@
+---
+# Tests fish installation via PPA (fish_install_from_ppa: true).
+# Ubuntu 26.04 is excluded here because the fish-shell/release-4 PPA does not
+# yet publish packages for Plucky. Use the no_ppa scenario to test on 26.04.
+dependency:
+  name: galaxy
+driver:
+  name: podman
+platforms:
+  - name: ubuntu-jammy
+    image: docker.io/ubuntu:22.04
+    pre_build_image: true
+  - name: ubuntu-noble
+    image: docker.io/ubuntu:24.04
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/.."
+verifier:
+  name: ansible

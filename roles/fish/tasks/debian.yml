@@ -1,0 +1,22 @@
+---
+- name: Install software-properties-common (required for PPA)
+  ansible.builtin.apt:
+    name: software-properties-common
+    state: present
+    update_cache: true
+  become: true
+  when: fish_install_from_ppa | bool
+
+- name: Add fish shell PPA
+  ansible.builtin.apt_repository:
+    repo: "{{ fish_ppa }}"
+    state: present
+  become: true
+  when: fish_install_from_ppa | bool
+
+- name: Install fish
+  ansible.builtin.apt:
+    name: fish
+    state: present
+    update_cache: true
+  become: true

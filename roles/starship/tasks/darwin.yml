@@ -1,0 +1,13 @@
+---
+- name: Install starship via Homebrew
+  community.general.homebrew:
+    name: starship
+    state: present
+  when: starship_install_method == 'package'
+
+- name: Install starship via official install script
+  ansible.builtin.shell:
+    cmd: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  args:
+    creates: /usr/local/bin/starship
+  when: starship_install_method == 'script'

@@ -1,0 +1,62 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Stat starship binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/starship
+      register: starship_bin
+
+    - name: Assert starship binary exists and is executable
+      ansible.builtin.assert:
+        that:
+          - starship_bin.stat.exists
+          - starship_bin.stat.executable
+        fail_msg: "starship binary not found or not executable at /usr/local/bin/starship"
+
+    - name: Run starship --version
+      ansible.builtin.command: /usr/local/bin/starship --version
+      register: starship_version
+      changed_when: false
+
+    - name: Assert starship --version output contains 'starship'
+      ansible.builtin.assert:
+        that:
+          - "'starship' in starship_version.stdout"
+        fail_msg: "Unexpected starship --version output: {{ starship_version.stdout }}"
+
+    - name: Check bash rc contains starship init block
+      ansible.builtin.command: >
+        grep -c "starship init bash" {{ ansible_env.HOME }}/.bashrc
+      register: bash_grep
+      changed_when: false
+
+    - name: Assert starship init is present in .bashrc
+      ansible.builtin.assert:
+        that:
+          - bash_grep.rc == 0
+        fail_msg: "'starship init bash' not found in {{ ansible_env.HOME }}/.bashrc"
+
+    - name: Check fish config contains starship init block
+      ansible.builtin.command: >
+        grep -c "starship init fish" {{ ansible_env.HOME }}/.config/fish/config.fish
+      register: fish_grep
+      changed_when: false
+
+    - name: Assert starship init is present in config.fish
+      ansible.builtin.assert:
+        that:
+          - fish_grep.rc == 0
+        fail_msg: "'starship init fish' not found in {{ ansible_env.HOME }}/.config/fish/config.fish"
+
+    - name: Assert starship.toml was not deployed (starship_config_src is empty by default)
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.config/starship.toml"
+      register: toml_stat
+
+    - name: Assert no starship.toml present
+      ansible.builtin.assert:
+        that:
+          - not toml_stat.stat.exists
+        fail_msg: "starship.toml was unexpectedly deployed"

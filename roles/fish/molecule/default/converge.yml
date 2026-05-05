@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: fish
+      vars:
+        fish_install_from_ppa: true
+        fish_set_as_default_shell: false

@@ -1,0 +1,30 @@
+---
+# Adds `starship init <shell> | source` (or equivalent) to each shell's rc file.
+# fish uses config.fish; bash uses ~/.bashrc; zsh uses ~/.zshrc.
+
+- name: Configure starship init in fish
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK — starship"
+    block: |
+      starship init fish | source
+  when: "'fish' in starship_configure_shells"
+
+- name: Configure starship init in bash
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK — starship"
+    block: |
+      eval "$(starship init bash)"
+  when: "'bash' in starship_configure_shells"
+
+- name: Configure starship init in zsh
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK — starship"
+    block: |
+      eval "$(starship init zsh)"
+  when: "'zsh' in starship_configure_shells"
