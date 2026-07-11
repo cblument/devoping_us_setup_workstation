@@ -1,0 +1,14 @@
+---
+- name: Set up workstation
+  hosts: all
+  tasks:
+    - name: Install fish
+      ansible.builtin.include_role:
+        name: devoping_us.workstation_setup.fish
+      vars:
+        fish_install_from_ppa: "{{ false if (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '26.04') else true }}"
+        fish_set_as_default_shell: true
+
+    - name: Install starship
+      ansible.builtin.include_role:
+        name: devoping_us.workstation_setup.starship

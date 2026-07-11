@@ -12,7 +12,11 @@ galaxy_info:
         - focal
         - jammy
         - noble
-        - plucky
+        - resolute
+    - name: Debian
+      versions:
+        - bookworm
+        - trixie
     - name: MacOSX
       versions:
         - any

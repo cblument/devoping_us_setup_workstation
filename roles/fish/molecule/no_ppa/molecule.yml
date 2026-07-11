@@ -1,4 +1,8 @@
 ---
+# Tests fish installation without a PPA (fish_install_from_ppa: false).
+# This is the only path available on Debian, since launchpad PPAs are
+# Ubuntu-specific, so debian-trixie is covered here rather than in the
+# PPA-based scenarios.
 dependency:
   name: galaxy
 driver:
@@ -10,8 +14,11 @@ platforms:
   - name: ubuntu-noble
     image: docker.io/ubuntu:24.04
     pre_build_image: true
-  - name: ubuntu-plucky
+  - name: ubuntu-resolute
     image: docker.io/ubuntu:26.04
+    pre_build_image: true
+  - name: debian-trixie
+    image: docker.io/debian:13
     pre_build_image: true
 provisioner:
   name: ansible

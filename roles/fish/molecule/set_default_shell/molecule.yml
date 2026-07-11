@@ -1,7 +1,11 @@
 ---
 # Tests fish installation via PPA + setting fish as the default login shell.
-# Ubuntu 26.04 is excluded because the fish-shell/release-4 PPA does not
-# yet publish packages for Plucky.
+# Ubuntu 26.04 (resolute) is excluded: apt-key has been removed from Ubuntu's
+# apt package on 26.04, and ansible.builtin.apt_repository's fallback GPG-key
+# import path (raw `gpg --export`, used when apt-key is absent) does not
+# actually fetch keys from the keyserver with modern GnuPG — it silently
+# imports nothing. This is an ansible-core limitation, not a PPA packaging
+# gap; the PPA itself does publish resolute packages.
 dependency:
   name: galaxy
 driver:
