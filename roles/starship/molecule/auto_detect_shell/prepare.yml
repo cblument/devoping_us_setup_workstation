@@ -1,0 +1,16 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.raw: apt-get update
+      changed_when: false
+
+    - name: Install python3, sudo, curl, and fish
+      ansible.builtin.raw: apt-get install -y python3 sudo curl fish
+      changed_when: true
+
+    - name: Set root's login shell to fish
+      ansible.builtin.raw: usermod --shell /usr/bin/fish root
+      changed_when: true

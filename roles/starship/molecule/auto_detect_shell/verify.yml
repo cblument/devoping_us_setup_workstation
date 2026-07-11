@@ -1,0 +1,48 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Assert ansible_user_shell was detected as fish
+      ansible.builtin.assert:
+        that:
+          - ansible_user_shell == '/usr/bin/fish'
+        fail_msg: "Expected ansible_user_shell to be /usr/bin/fish, got {{ ansible_user_shell }}"
+
+    - name: Check fish config contains starship init block
+      ansible.builtin.command: >
+        grep -c "starship init fish" {{ ansible_env.HOME }}/.config/fish/config.fish
+      register: fish_grep
+      changed_when: false
+
+    - name: Assert starship init is present in config.fish
+      ansible.builtin.assert:
+        that:
+          - fish_grep.rc == 0
+        fail_msg: "'starship init fish' not found in {{ ansible_env.HOME }}/.config/fish/config.fish"
+
+    - name: Check whether .bashrc contains a starship-managed block
+      ansible.builtin.command: >
+        grep -c "ANSIBLE MANAGED BLOCK — starship" {{ ansible_env.HOME }}/.bashrc
+      register: bashrc_grep
+      changed_when: false
+      failed_when: false
+
+    - name: Assert .bashrc was not configured (auto-detected shell is fish, not bash)
+      ansible.builtin.assert:
+        that:
+          - bashrc_grep.stdout | default('0') | int == 0
+        fail_msg: "Found an unexpected starship-managed block in {{ ansible_env.HOME }}/.bashrc — auto-detected shell should only configure fish"
+
+    - name: Check whether .zshrc contains a starship-managed block
+      ansible.builtin.command: >
+        grep -c "ANSIBLE MANAGED BLOCK — starship" {{ ansible_env.HOME }}/.zshrc
+      register: zshrc_grep
+      changed_when: false
+      failed_when: false
+
+    - name: Assert .zshrc was not configured (auto-detected shell is fish, not zsh)
+      ansible.builtin.assert:
+        that:
+          - zshrc_grep.stdout | default('0') | int == 0
+        fail_msg: "Found an unexpected starship-managed block in {{ ansible_env.HOME }}/.zshrc — auto-detected shell should only configure fish"

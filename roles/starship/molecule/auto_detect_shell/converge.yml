@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: starship
+      vars:
+        starship_install_method: script
+        # starship_configure_shells intentionally left unset to exercise the
+        # role's auto-detect default (based on ansible_user_shell).

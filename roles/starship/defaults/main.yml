@@ -3,7 +3,8 @@
 starship_install_method: script
 
 # Shell(s) to configure starship init in. List any of: fish, bash, zsh
-starship_configure_shells: []
+# Defaults to the invoking user's login shell on the target system.
+starship_configure_shells: "{{ [ansible_user_shell | basename] }}"
 
 # Optional: path to a starship.toml to deploy; leave empty to skip
 starship_config_src: ""

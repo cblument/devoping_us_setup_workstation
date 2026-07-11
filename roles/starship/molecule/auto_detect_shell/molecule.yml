@@ -1,0 +1,20 @@
+---
+# Tests the role's default (starship_configure_shells left unset), which
+# should auto-detect the target user's actual login shell via
+# ansible_user_shell rather than requiring an explicit shell list.
+dependency:
+  name: galaxy
+driver:
+  name: podman
+platforms:
+  - name: ubuntu-jammy
+    image: docker.io/ubuntu:22.04
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/.."
+verifier:
+  name: ansible
